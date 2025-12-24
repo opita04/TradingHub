@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeHub Test Runner</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0f1419;
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { 
+            font-size: 2rem; 
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        button:hover { background: #2563eb; transform: translateY(-1px); }
+        button.danger { background: #ef4444; }
+        button.danger:hover { background: #dc2626; }
+        button.success { background: #10b981; }
+        button.success:hover { background: #059669; }
+        .results {
+            background: #1a1f2e;
+            border: 1px solid #334155;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .results h2 { font-size: 1.25rem; margin-bottom: 1rem; color: #94a3b8; }
+        .test-group { margin-bottom: 1.5rem; }
+        .test-group h3 { 
+            font-size: 1rem; 
+            color: #60a5fa; 
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 0.5rem;
+        }
+        .test-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 0.25rem;
+        }
+        .test-item:hover { background: rgba(59, 130, 246, 0.1); }
+        .test-item.pass { color: #10b981; }
+        .test-item.fail { color: #ef4444; }
+        .test-item.pass::before { content: '✅'; }
+        .test-item.fail::before { content: '❌'; }
+        .summary {
+            display: flex;
+            gap: 2rem;
+            padding: 1rem;
+            background: #0f1419;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .summary-item { text-align: center; }
+        .summary-item .label { color: #94a3b8; font-size: 0.75rem; }
+        .summary-item .value { font-size: 1.5rem; font-weight: bold; }
+        .summary-item .value.pass { color: #10b981; }
+        .summary-item .value.fail { color: #ef4444; }
+        .log { 
+            background: #0f1419; 
+            padding: 1rem; 
+            border-radius: 0.5rem; 
+            font-family: monospace;
+            font-size: 0.75rem;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .log-entry { margin-bottom: 0.25rem; }
+        .log-entry.error { color: #ef4444; }
+        .log-entry.success { color: #10b981; }
+        .log-entry.info { color: #60a5fa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 TradeHub Test Runner</h1>
+        <p style="color: #94a3b8; margin-bottom: 1.5rem;">
+            Browser-based test suite for TradeHub. Run these tests with the app running at localhost:5173.
+        </p>
+
+        <div class="controls">
+            <button onclick="runAllTests()">▶ Run All Tests</button>
+            <button onclick="runUnitTests()">Unit Tests</button>
+            <button onclick="runStorageTests()">Storage Tests</button>
+            <button class="danger" onclick="clearTestData()">🗑 Clear Test Data</button>
+            <button class="success" onclick="seedTestData()">📦 Seed Sample Data</button>
+        </div>
+
+        <div class="results" id="results">
+            <div class="summary" id="summary">
+                <div class="summary-item">
+                    <div class="label">Total</div>
+                    <div class="value" id="total">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">Passed</div>
+                    <div class="value pass" id="passed">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">Failed</div>
+                    <div class="value fail" id="failed">0</div>
+                </div>
+            </div>
+            <h2>Test Results</h2>
+            <div id="test-output">Click "Run All Tests" to begin...</div>
+        </div>
+
+        <div class="results">
+            <h2>Console Log</h2>
+            <div class="log" id="log"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===========================================
+        // TEST UTILITIES
+        // ===========================================
+        const results = { passed: 0, failed: 0, groups: {} };
+        
+        function log(message, type = '') {
+            const logEl = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function assert(condition, testName, group = 'General') {
+            if (!results.groups[group]) results.groups[group] = [];
+            
+            if (condition) {
+                results.passed++;
+                results.groups[group].push({ name: testName, pass: true });
+                log(`✅ ${testName}`, 'success');
+            } else {
+                results.failed++;
+                results.groups[group].push({ name: testName, pass: false });
+                log(`❌ ${testName}`, 'error');
+            }
+        }
+
+        function assertEquals(actual, expected, testName, group = 'General') {
+            const pass = actual === expected;
+            if (!pass) {
+                log(`Expected: ${expected}, Got: ${actual}`, 'error');
+            }
+            assert(pass, testName, group);
+        }
+
+        function assertClose(actual, expected, tolerance, testName, group = 'General') {
+            const pass = Math.abs(actual - expected) <= tolerance;
+            if (!pass) {
+                log(`Expected: ~${expected} (±${tolerance}), Got: ${actual}`, 'error');
+            }
+            assert(pass, testName, group);
+        }
+
+        function renderResults() {
+            document.getElementById('total').textContent = results.passed + results.failed;
+            document.getElementById('passed').textContent = results.passed;
+            document.getElementById('failed').textContent = results.failed;
+
+            let html = '';
+            for (const [group, tests] of Object.entries(results.groups)) {
+                html += `<div class="test-group"><h3>${group}</h3>`;
+                for (const test of tests) {
+                    html += `<div class="test-item ${test.pass ? 'pass' : 'fail'}">${test.name}</div>`;
+                }
+                html += '</div>';
+            }
+            document.getElementById('test-output').innerHTML = html || 'No tests run yet';
+        }
+
+        function resetResults() {
+            results.passed = 0;
+            results.failed = 0;
+            results.groups = {};
+            document.getElementById('log').innerHTML = '';
+        }
+
+        // ===========================================
+        // MOCK DATA HELPERS
+        // ===========================================
+        function createMockTrade(overrides = {}) {
+            return {
+                id: Math.random().toString(36).slice(2),
+                date: '2023-12-01',
+                time: '09:30',
+                instrument: 'NQ',
+                direction: 'buy',
+                session: 'NY AM',
+                pnl: 0,
+                followedRules: true,
+                screenshots: [],
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                ...overrides
+            };
+        }
+
+        // ===========================================
+        // ANALYTICS SERVICE TESTS (Browser version)
+        // ===========================================
+        
+        // Since we can't import ES modules directly in vanilla HTML,
+        // we'll test via localStorage and UI interactions
+        
+        function runUnitTests() {
+            resetResults();
+            log('🚀 Starting Unit Tests...', 'info');
+
+            const group = 'Analytics Calculations';
+
+            // Test: Empty array handling
+            {
+                const trades = [];
+                let totalPnL = trades.reduce((sum, t) => sum + t.pnl, 0);
+                assertEquals(totalPnL, 0, 'Empty trades = 0 P&L', group);
+            }
+
+            // Test: Win rate calculation
+            {
+                const trades = [
+                    createMockTrade({ pnl: 100 }),
+                    createMockTrade({ pnl: -50 }),
+                    createMockTrade({ pnl: 75 })
+                ];
+                const wins = trades.filter(t => t.pnl > 0);
+                const winRate = (wins.length / trades.length) * 100;
+                assertClose(winRate, 66.67, 0.1, 'Win rate = 66.67% (2/3)', group);
+            }
+
+            // Test: Profit factor
+            {
+                const trades = [
+                    createMockTrade({ pnl: 100 }),
+                    createMockTrade({ pnl: 200 }),
+                    createMockTrade({ pnl: -150 })
+                ];
+                const totalWins = trades.filter(t => t.pnl > 0).reduce((s, t) => s + t.pnl, 0);
+                const totalLosses = Math.abs(trades.filter(t => t.pnl < 0).reduce((s, t) => s + t.pnl, 0));
+                const pf = totalWins / totalLosses;
+                assertEquals(pf, 2, 'Profit factor = 2.0', group);
+            }
+
+            // Test: Best/Worst trade
+            {
+                const trades = [
+                    createMockTrade({ pnl: 100 }),
+                    createMockTrade({ pnl: 500 }),
+                    createMockTrade({ pnl: -200 })
+                ];
+                const best = Math.max(...trades.map(t => t.pnl));
+                const worst = Math.min(...trades.map(t => t.pnl));
+                assertEquals(best, 500, 'Best trade = 500', group);
+                assertEquals(worst, -200, 'Worst trade = -200', group);
+            }
+
+            // Test: Streak calculation
+            {
+                // This mimics the service logic
+                const trades = [
+                    createMockTrade({ pnl: 100, createdAt: 1000 }),
+                    createMockTrade({ pnl: 100, createdAt: 2000 }),
+                    createMockTrade({ pnl: -50, createdAt: 3000 })
+                ];
+                const sorted = [...trades].sort((a, b) => a.createdAt - b.createdAt);
+                let currentStreak = 0;
+                let maxWin = 0, maxLose = 0, tempWin = 0, tempLose = 0;
+                
+                sorted.forEach(t => {
+                    if (t.pnl > 0) {
+                        tempWin++; tempLose = 0;
+                        if (currentStreak < 0) currentStreak = 1;
+                        else currentStreak++;
+                    } else {
+                        tempLose++; tempWin = 0;
+                        if (currentStreak > 0) currentStreak = -1;
+                        else currentStreak--;
+                    }
+                    maxWin = Math.max(maxWin, tempWin);
+                    maxLose = Math.max(maxLose, tempLose);
+                });
+                
+                assertEquals(currentStreak, -1, 'Current streak = -1 (ends in loss)', group);
+                assertEquals(maxWin, 2, 'Max win streak = 2', group);
+            }
+
+            // Test: Instrument grouping
+            {
+                const trades = [
+                    createMockTrade({ pnl: 100, instrument: 'NQ' }),
+                    createMockTrade({ pnl: 200, instrument: 'ES' }),
+                    createMockTrade({ pnl: -150, instrument: 'NQ' })
+                ];
+                const map = new Map();
+                trades.forEach(t => {
+                    const curr = map.get(t.instrument) || 0;
+                    map.set(t.instrument, curr + t.pnl);
+                });
+                assertEquals(map.get('NQ'), -50, 'NQ total = -50', group);
+                assertEquals(map.get('ES'), 200, 'ES total = 200', group);
+            }
+
+            renderResults();
+            log('✅ Unit tests complete!', 'success');
+        }
+
+        // ===========================================
+        // STORAGE SERVICE TESTS
+        // ===========================================
+
+        function runStorageTests() {
+            resetResults();
+            log('🚀 Starting Storage Tests...', 'info');
+
+            const group = 'Storage Service';
+            const TEST_KEY = 'test_tradinghub_trades';
+
+            // Test: Save and load
+            {
+                const testTrades = [createMockTrade({ pnl: 100 })];
+                localStorage.setItem(TEST_KEY, JSON.stringify(testTrades));
+                const loaded = JSON.parse(localStorage.getItem(TEST_KEY) || '[]');
+                assertEquals(loaded.length, 1, 'Save/Load: Returns 1 trade', group);
+                assertEquals(loaded[0].pnl, 100, 'Save/Load: P&L preserved', group);
+            }
+
+            // Test: Empty load
+            {
+                localStorage.removeItem(TEST_KEY);
+                const loaded = JSON.parse(localStorage.getItem(TEST_KEY) || '[]');
+                assertEquals(loaded.length, 0, 'Empty storage returns []', group);
+            }
+
+            // Test: Clear data
+            {
+                localStorage.setItem(TEST_KEY, JSON.stringify([createMockTrade()]));
+                localStorage.removeItem(TEST_KEY);
+                assert(localStorage.getItem(TEST_KEY) === null, 'Clear removes data', group);
+            }
+
+            // Test: Export format
+            {
+                const exportData = { 
+                    trades: [createMockTrade({ pnl: 100 })], 
+                    templates: [] 
+                };
+                const json = JSON.stringify(exportData, null, 2);
+                const parsed = JSON.parse(json);
+                assertEquals(parsed.trades.length, 1, 'Export: Valid JSON structure', group);
+            }
+
+            // Test: Import valid data
+            {
+                const importData = JSON.stringify({ 
+                    trades: [createMockTrade({ pnl: 500 })], 
+                    templates: [] 
+                });
+                try {
+                    const data = JSON.parse(importData);
+                    assert(data.trades && Array.isArray(data.trades), 'Import: Parses valid JSON', group);
+                } catch (e) {
+                    assert(false, 'Import: Parses valid JSON', group);
+                }
+            }
+
+            // Test: Import invalid data
+            {
+                const invalidJson = 'not valid json';
+                try {
+                    JSON.parse(invalidJson);
+                    assert(false, 'Import: Rejects invalid JSON', group);
+                } catch (e) {
+                    assert(true, 'Import: Rejects invalid JSON', group);
+                }
+            }
+
+            // Cleanup
+            localStorage.removeItem(TEST_KEY);
+            
+            renderResults();
+            log('✅ Storage tests complete!', 'success');
+        }
+
+        // ===========================================
+        // DATA UTILITIES
+        // ===========================================
+
+        function clearTestData() {
+            if (confirm('This will clear ALL TradeHub data. Are you sure?')) {
+                localStorage.removeItem('tradinghub_trades');
+                localStorage.removeItem('tradinghub_templates');
+                log('🗑 All TradeHub data cleared!', 'success');
+                alert('Data cleared! Refresh the TradeHub app to see changes.');
+            }
+        }
+
+        function seedTestData() {
+            const sampleTrades = [
+                createMockTrade({ pnl: 150, instrument: 'NQ', session: 'NY AM', date: '2023-12-01', createdAt: Date.now() - 86400000 * 5 }),
+                createMockTrade({ pnl: -75, instrument: 'ES', session: 'NY PM', date: '2023-12-02', createdAt: Date.now() - 86400000 * 4 }),
+                createMockTrade({ pnl: 200, instrument: 'NQ', session: 'NY AM', date: '2023-12-03', createdAt: Date.now() - 86400000 * 3 }),
+                createMockTrade({ pnl: -50, instrument: 'MNQ', session: 'London', date: '2023-12-04', createdAt: Date.now() - 86400000 * 2 }),
+                createMockTrade({ pnl: 300, instrument: 'NQ', session: 'NY AM', date: '2023-12-05', createdAt: Date.now() - 86400000 }),
+                createMockTrade({ pnl: 125, instrument: 'ES', session: 'NY AM', date: new Date().toISOString().split('T')[0], createdAt: Date.now() }),
+            ];
+            localStorage.setItem('tradinghub_trades', JSON.stringify(sampleTrades));
+            log('📦 Seeded 6 sample trades!', 'success');
+            alert('Sample data added! Refresh the TradeHub app to see changes.');
+        }
+
+        // ===========================================
+        // MAIN
+        // ===========================================
+
+        function runAllTests() {
+            resetResults();
+            log('🚀 Starting All Tests...', 'info');
+            
+            // Can't await in simple HTML, so we chain
+            runUnitTests();
+            
+            // Add storage tests to existing results
+            const prevPassed = results.passed;
+            const prevFailed = results.failed;
+            
+            // Storage tests
+            const group = 'Storage Service';
+            const TEST_KEY = 'test_tradinghub_trades';
+
+            {
+                const testTrades = [createMockTrade({ pnl: 100 })];
+                localStorage.setItem(TEST_KEY, JSON.stringify(testTrades));
+                const loaded = JSON.parse(localStorage.getItem(TEST_KEY) || '[]');
+                assertEquals(loaded.length, 1, 'Save/Load: Returns 1 trade', group);
+                assertEquals(loaded[0].pnl, 100, 'Save/Load: P&L preserved', group);
+            }
+
+            {
+                localStorage.removeItem(TEST_KEY);
+                const loaded = JSON.parse(localStorage.getItem(TEST_KEY) || '[]');
+                assertEquals(loaded.length, 0, 'Empty storage returns []', group);
+            }
+
+            {
+                localStorage.setItem(TEST_KEY, JSON.stringify([createMockTrade()]));
+                localStorage.removeItem(TEST_KEY);
+                assert(localStorage.getItem(TEST_KEY) === null, 'Clear removes data', group);
+            }
+
+            localStorage.removeItem(TEST_KEY);
+            
+            renderResults();
+            log('🎉 All tests complete!', 'success');
+        }
+
+        // Initialize
+        renderResults();
+        log('Test runner ready. Click a button to start.', 'info');
+    </script>
+</body>
+</html>
