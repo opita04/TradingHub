@@ -9,6 +9,7 @@ import { useTradeStore } from '../../stores/tradeStore';
 import { useAccountStore } from '../../stores/accountStore';
 import { v4 as uuidv4 } from 'uuid';
 import type { Trade, ChartAnalysis } from '../../types';
+import { storageService } from '../../services/storage';
 
 type TabId = 'context' | 'levels' | 'strategy' | 'demon' | 'review';
 
@@ -83,11 +84,19 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({ isOpen, onClose })
     const addTrade = useTradeStore((state) => state.addTrade);
     const selectedAccountId = useAccountStore((state) => state.selectedAccountId);
 
-    // Reset form when modal opens and set default account
+    // Reset form when modal opens, load saved defaults
     useEffect(() => {
         if (isOpen) {
+            const savedDefaults = storageService.loadFormDefaults();
             setFormData({
                 ...INITIAL_FORM_DATA,
+                // Apply saved defaults if available
+                ...(savedDefaults && {
+                    instrument: savedDefaults.instrument || INITIAL_FORM_DATA.instrument,
+                    direction: savedDefaults.direction || INITIAL_FORM_DATA.direction,
+                    entryTimeframe: savedDefaults.entryTimeframe || INITIAL_FORM_DATA.entryTimeframe,
+                    session: savedDefaults.session || INITIAL_FORM_DATA.session,
+                }),
                 accountId: selectedAccountId || ''
             });
             setActiveTab('context');
@@ -173,6 +182,15 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({ isOpen, onClose })
         };
 
         addTrade(newTrade);
+
+        // Save form defaults for next time
+        storageService.saveFormDefaults({
+            instrument: formData.instrument,
+            direction: formData.direction,
+            entryTimeframe: formData.entryTimeframe,
+            session: formData.session,
+        });
+
         onClose();
     };
 

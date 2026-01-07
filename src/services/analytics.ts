@@ -1,4 +1,4 @@
-import type { Trade, EnhancedTradeStats, LifestyleEntry, TimelineWindow } from '../types/index';
+import type { Trade, EnhancedTradeStats, TimelineWindow } from '../types/index';
 import { format, subDays, startOfYear, isAfter } from 'date-fns';
 
 export const analyticsService = {
@@ -182,7 +182,7 @@ export const analyticsService = {
         return Array.from(map.entries()).map(([name, value]) => ({ name, value }));
     },
 
-    // --- Advanced Analytics & Lifestyle Alpha ---
+    // --- Advanced Analytics ---
 
     normalizeData: (data: number[]): number[] => {
         const min = Math.min(...data);
@@ -190,54 +190,6 @@ export const analyticsService = {
         if (max === min) return data.map(() => 50); // Flat line
 
         return data.map(val => ((val - min) / (max - min)) * 100);
-    },
-
-    calculateCorrelations: (_trades: Trade[], _lifestyle: LifestyleEntry[]) => {
-        // Placeholder for Pearson Correlation Coefficient calculation
-        // Will implement full R-value logic in next phase
-        return [];
-    },
-
-    getEquityAndLifestyleData: (trades: Trade[], lifestyle: LifestyleEntry[]): any[] => {
-        // 1. Get Equity Curve (Daily)
-        const equityCurve = analyticsService.getEquityCurve(trades);
-
-        // 2. Map Lifestyle Data by Date
-        const lifestyleMap = new Map(lifestyle.map(l => [l.date, l]));
-
-        // 3. Merge & Normalize
-        // We need arrays of values to calculate min/max for normalization
-        const dates = equityCurve.map(e => e.rawDate);
-        const equityValues = equityCurve.map(e => e.value);
-
-        // Normalize Equity
-        const normalizedEquity = analyticsService.normalizeData(equityValues);
-
-        return dates.map((date, i) => {
-            const entry = lifestyleMap.get(date);
-            const dataPoint: any = {
-                date: equityCurve[i].date, // MMM d
-                rawDate: date,
-                equity: normalizedEquity[i],
-                rawEquity: equityValues[i],
-            };
-
-            // Add normalized lifestyle metrics if they exist
-            if (entry) {
-                if (entry.sleepDuration) {
-                    // Normalize sleep (assuming 4h to 10h range for visualization context)
-                    // Or we can dynamically normalize based on user's history
-                    dataPoint.sleep = (entry.sleepDuration / 12) * 100; // crude normalization
-                }
-
-                entry.habits.forEach(h => {
-                    // Habits are 0-10 or 0/1. 
-                    // If 0-10, just multiply by 10. If boolean, 0 or 100.
-                    dataPoint[h.habitId] = h.value <= 1 ? h.value * 100 : h.value * 10;
-                });
-            }
-
-            return dataPoint;
-        });
     }
 };
+

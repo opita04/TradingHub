@@ -1,8 +1,6 @@
 import type {
     Trade,
     Template,
-    LifestyleEntry,
-    CustomHabit,
     JournalEntry,
     DiaryEntry,
     PersonalFinanceEntry,
@@ -13,13 +11,20 @@ import type {
 
 const TRADES_KEY = 'tradinghub_trades';
 const TEMPLATES_KEY = 'tradinghub_templates';
-const LIFESTYLE_KEY = 'tradinghub_lifestyle';
-const CUSTOM_HABITS_KEY = 'tradinghub_custom_habits';
 const JOURNAL_KEY = 'tradinghub_journal';
 const DIARY_KEY = 'tradinghub_diary';
 const FINANCE_KEY = 'tradinghub_finance';
 const COPIER_KEY = 'tradinghub_copier';
 const STRATEGIES_KEY = 'tradinghub_strategies';
+const FORM_DEFAULTS_KEY = 'tradinghub_form_defaults';
+
+// Type for persistable form defaults
+interface FormDefaults {
+    instrument?: string;
+    direction?: 'long' | 'short';
+    entryTimeframe?: string;
+    session?: string;
+}
 const PROP_FIRMS_KEY = 'tradinghub_prop_firms';
 
 export const storageService = {
@@ -59,25 +64,6 @@ export const storageService = {
             console.error('Error loading templates from localStorage', error);
             return [];
         }
-    },
-
-    // Lifestyle
-    saveLifestyleEntries: (entries: LifestyleEntry[]) => {
-        localStorage.setItem(LIFESTYLE_KEY, JSON.stringify(entries));
-    },
-
-    loadLifestyleEntries: (): LifestyleEntry[] => {
-        const data = localStorage.getItem(LIFESTYLE_KEY);
-        return data ? JSON.parse(data) : [];
-    },
-
-    saveCustomHabits: (habits: CustomHabit[]) => {
-        localStorage.setItem(CUSTOM_HABITS_KEY, JSON.stringify(habits));
-    },
-
-    loadCustomHabits: (): CustomHabit[] => {
-        const data = localStorage.getItem(CUSTOM_HABITS_KEY);
-        return data ? JSON.parse(data) : [];
     },
 
     // Journal & Diary
@@ -139,6 +125,16 @@ export const storageService = {
         return data ? JSON.parse(data) : [];
     },
 
+    // Form Defaults (last-used values)
+    saveFormDefaults: (defaults: FormDefaults) => {
+        localStorage.setItem(FORM_DEFAULTS_KEY, JSON.stringify(defaults));
+    },
+
+    loadFormDefaults: (): FormDefaults | null => {
+        const data = localStorage.getItem(FORM_DEFAULTS_KEY);
+        return data ? JSON.parse(data) : null;
+    },
+
     clearAllData: () => {
         localStorage.clear();
     },
@@ -147,8 +143,6 @@ export const storageService = {
         const data = {
             trades: JSON.parse(localStorage.getItem(TRADES_KEY) || '[]'),
             templates: JSON.parse(localStorage.getItem(TEMPLATES_KEY) || '[]'),
-            lifestyle: JSON.parse(localStorage.getItem(LIFESTYLE_KEY) || '[]'),
-            customHabits: JSON.parse(localStorage.getItem(CUSTOM_HABITS_KEY) || '[]'),
             journal: JSON.parse(localStorage.getItem(JOURNAL_KEY) || '[]'),
             diary: JSON.parse(localStorage.getItem(DIARY_KEY) || '[]'),
             finance: JSON.parse(localStorage.getItem(FINANCE_KEY) || '[]'),
@@ -163,8 +157,6 @@ export const storageService = {
             const data = JSON.parse(jsonData);
             if (data.trades) localStorage.setItem(TRADES_KEY, JSON.stringify(data.trades));
             if (data.templates) localStorage.setItem(TEMPLATES_KEY, JSON.stringify(data.templates));
-            if (data.lifestyle) localStorage.setItem(LIFESTYLE_KEY, JSON.stringify(data.lifestyle));
-            if (data.customHabits) localStorage.setItem(CUSTOM_HABITS_KEY, JSON.stringify(data.customHabits));
             if (data.journal) localStorage.setItem(JOURNAL_KEY, JSON.stringify(data.journal));
             if (data.diary) localStorage.setItem(DIARY_KEY, JSON.stringify(data.diary));
             if (data.finance) localStorage.setItem(FINANCE_KEY, JSON.stringify(data.finance));
