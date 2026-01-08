@@ -87,6 +87,7 @@ export function TradeEntryForm() {
             // Create new trade object
             const newTrade: Trade = {
                 id: uuidv4(),
+                tradeType: 'LIVE',
                 date,
                 time,
                 instrument: formData.instrument || 'Unknown',

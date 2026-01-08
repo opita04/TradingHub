@@ -11,6 +11,7 @@ import type { Trade } from '../types/index.ts';
 function createMockTrade(overrides: Partial<Trade> = {}): Trade {
     return {
         id: Math.random().toString(36).slice(2),
+        tradeType: 'LIVE',
         date: '2023-12-01',
         time: '09:30',
         instrument: 'NQ',

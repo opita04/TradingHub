@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { storageService } from '../services/storage';
 import type { Strategy } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import { useBacktestStore } from './backtestStore';
 
 interface StrategiesState {
     strategies: Strategy[];
@@ -43,6 +44,11 @@ export const useStrategiesStore = create<StrategiesState>((set) => ({
     },
 
     moveStrategy: (id, newStatus) => {
+        const { currentSession } = useBacktestStore.getState();
+        if (currentSession?.status === 'ACTIVE' && currentSession.strategyId === id) {
+            console.warn('Cannot move strategy during active backtest session');
+            return;
+        }
         set((state) => {
             const updated = state.strategies.map(s =>
                 s.id === id ? { ...s, status: newStatus } : s
@@ -53,6 +59,11 @@ export const useStrategiesStore = create<StrategiesState>((set) => ({
     },
 
     updateStrategy: (id, updates) => {
+        const { currentSession } = useBacktestStore.getState();
+        if (currentSession?.status === 'ACTIVE' && currentSession.strategyId === id) {
+            console.warn('Cannot update strategy during active backtest session');
+            return;
+        }
         set((state) => {
             const updated = state.strategies.map(s =>
                 s.id === id ? { ...s, ...updates } : s
@@ -63,6 +74,11 @@ export const useStrategiesStore = create<StrategiesState>((set) => ({
     },
 
     deleteStrategy: (id) => {
+        const { currentSession } = useBacktestStore.getState();
+        if (currentSession?.status === 'ACTIVE' && currentSession.strategyId === id) {
+            console.warn('Cannot delete strategy during active backtest session');
+            return;
+        }
         set((state) => {
             const updated = state.strategies.filter(s => s.id !== id);
             storageService.saveStrategies(updated);

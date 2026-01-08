@@ -1,9 +1,12 @@
 import React from 'react';
 import { Bell, Plus, Download, Layout, Palette, Filter } from 'lucide-react';
 import { useAppStore } from '../../stores/appStore';
+import { useBacktestStore } from '../../stores/backtestStore';
 
 export const Header: React.FC = () => {
     const { activeTab, setNewTradeModalOpen } = useAppStore();
+    const { currentSession } = useBacktestStore();
+    const isSessionActive = currentSession?.status === 'ACTIVE';
 
     const getTitle = () => {
         switch (activeTab) {
@@ -15,6 +18,7 @@ export const Header: React.FC = () => {
             case 'copier': return 'Trade Copier';
             case 'finance': return 'Personal Finance';
             case 'diary': return 'Diary';
+            case 'backtest': return isSessionActive ? 'Backtest Execution' : 'Backtesting';
             default: return activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
         }
     };
@@ -31,8 +35,12 @@ export const Header: React.FC = () => {
                     <>
                         {/* New Trade Button */}
                         <button
-                            onClick={() => setNewTradeModalOpen(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-profit hover:bg-profit/90 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-profit/20"
+                            onClick={() => !isSessionActive && setNewTradeModalOpen(true)}
+                            disabled={isSessionActive}
+                            className={`flex items-center gap-2 px-4 py-2 text-white text-sm font-medium rounded-lg transition-colors shadow-lg 
+                                ${isSessionActive
+                                    ? 'bg-white/5 text-tertiary cursor-not-allowed shadow-none'
+                                    : 'bg-profit hover:bg-profit/90 shadow-profit/20'}`}
                         >
                             <Plus size={16} />
                             New Trade

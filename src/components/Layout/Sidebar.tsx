@@ -8,6 +8,7 @@ import {
     Ghost,
     BookOpen,
     DollarSign,
+    FlaskConical,
     Search,
     ChevronDown,
     ChevronRight,
@@ -20,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useAppStore } from '../../stores/appStore';
 import { useAccountStore } from '../../stores/accountStore';
+import { useBacktestStore } from '../../stores/backtestStore';
 import { AddAccountModal, RenameAccountModal, DeleteAccountModal } from '../Account/AccountModals';
 
 interface SidebarItemProps {
@@ -306,6 +308,8 @@ const AccountsDropdown: React.FC<AccountsDropdownProps> = ({ active, onClick }) 
 
 export const Sidebar: React.FC = () => {
     const { activeTab, setActiveTab } = useAppStore();
+    const { currentSession } = useBacktestStore();
+    const isSessionActive = currentSession?.status === 'ACTIVE';
 
     return (
         <div className="w-64 h-full glass border-r border-white/5 flex flex-col relative z-20 shadow-2xl">
@@ -346,6 +350,14 @@ export const Sidebar: React.FC = () => {
                     id="workstation"
                     active={activeTab === 'workstation'}
                     onClick={() => setActiveTab('workstation')}
+                />
+                <SidebarItem
+                    icon={FlaskConical}
+                    label="Backtesting"
+                    id="backtest"
+                    badge={isSessionActive ? 'ACTIVE' : undefined}
+                    active={activeTab === 'backtest'}
+                    onClick={() => setActiveTab('backtest')}
                 />
 
 

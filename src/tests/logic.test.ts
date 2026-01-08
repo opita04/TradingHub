@@ -7,6 +7,7 @@ describe('Analytics & Demon Hunter Logic', () => {
     // Helper to create mock trades
     const createTrade = (pnl: number, dateStr: string, timeStr: string, risk?: number): Trade => ({
         id: Math.random().toString(),
+        tradeType: 'LIVE',
         date: dateStr,
         time: timeStr,
         instrument: 'NQ',

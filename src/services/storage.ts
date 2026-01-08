@@ -6,7 +6,8 @@ import type {
     PersonalFinanceEntry,
     CopierGroup,
     Strategy,
-    PropFirm
+    PropFirm,
+    BacktestSession
 } from '../types';
 
 const TRADES_KEY = 'tradinghub_trades';
@@ -26,6 +27,7 @@ interface FormDefaults {
     session?: string;
 }
 const PROP_FIRMS_KEY = 'tradinghub_prop_firms';
+const BACKTEST_SESSIONS_KEY = 'tradinghub_backtest_sessions';
 
 export const storageService = {
     // Trades
@@ -123,6 +125,25 @@ export const storageService = {
     loadPropFirms: (): PropFirm[] => {
         const data = localStorage.getItem(PROP_FIRMS_KEY);
         return data ? JSON.parse(data) : [];
+    },
+
+    // Backtest Sessions
+    saveBacktestSessions: (sessions: BacktestSession[]) => {
+        try {
+            localStorage.setItem(BACKTEST_SESSIONS_KEY, JSON.stringify(sessions));
+        } catch (error) {
+            console.error('Error saving backtest sessions to localStorage', error);
+        }
+    },
+
+    loadBacktestSessions: (): BacktestSession[] => {
+        try {
+            const data = localStorage.getItem(BACKTEST_SESSIONS_KEY);
+            return data ? JSON.parse(data) : [];
+        } catch (error) {
+            console.error('Error loading backtest sessions from localStorage', error);
+            return [];
+        }
     },
 
     // Form Defaults (last-used values)

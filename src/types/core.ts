@@ -1,5 +1,8 @@
 export interface Trade {
     id: string;
+    tradeType: 'LIVE' | 'BACKTEST';
+    sessionId?: string;
+    strategyVersionId?: string;
     date: string;              // ISO date string (YYYY-MM-DD)
     time: string;              // HH:mm format
     instrument: string;        // NQ, ES, MNQ, etc.

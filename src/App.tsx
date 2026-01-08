@@ -21,6 +21,7 @@ import { Diary } from './components/Diary/Diary';
 import { AccountPage } from './components/Account/AccountPage';
 import { NewTradeModal } from './components/TradeEntry/NewTradeModal';
 import { Workstation } from './components/Workstation/Workstation';
+import { BacktestPage, SessionLockOverlay } from './components/Backtesting';
 
 function App() {
   const { activeTab, isNewTradeModalOpen, setNewTradeModalOpen } = useAppStore();
@@ -35,7 +36,7 @@ function App() {
   const renderContent = () => {
     switch (activeTab) {
       case 'overview':
-        return <Dashboard />;
+        return <SessionLockOverlay><Dashboard /></SessionLockOverlay>;
       case 'workstation':
         return <Workstation />;
 
@@ -46,11 +47,11 @@ function App() {
       case 'accounts':
         return <AccountPage />;
       case 'journal':
-        return <ReflectionJournal />;
+        return <SessionLockOverlay><ReflectionJournal /></SessionLockOverlay>;
       case 'demon-hunter':
-        return <DemonHunter />;
+        return <SessionLockOverlay><DemonHunter /></SessionLockOverlay>;
       case 'strategies':
-        return <StrategiesLab />;
+        return <SessionLockOverlay><StrategiesLab /></SessionLockOverlay>;
       case 'settings':
         return <div className="p-6"><Settings /></div>;
       case 'copier':
@@ -58,14 +59,9 @@ function App() {
       case 'finance':
         return <PersonalFinance />;
       case 'diary':
-        return <Diary />;
+        return <SessionLockOverlay><Diary /></SessionLockOverlay>;
       case 'backtest':
-        return (
-          <div className="flex flex-col items-center justify-center h-[60vh] text-tertiary">
-            <p className="text-lg font-medium">Module: {activeTab}</p>
-            <p className="text-sm">Under Construction</p>
-          </div>
-        );
+        return <BacktestPage />;
       default:
         return (
           <div className="flex flex-col items-center justify-center h-[60vh] text-tertiary">

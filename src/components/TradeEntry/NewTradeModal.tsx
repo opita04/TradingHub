@@ -150,6 +150,7 @@ export const NewTradeModal: React.FC<NewTradeModalProps> = ({ isOpen, onClose })
 
         const newTrade: Trade = {
             id: uuidv4(),
+            tradeType: 'LIVE',
             date: formData.entryDate,
             time: formData.entryTime,
             instrument: formData.instrument,

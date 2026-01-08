@@ -3,6 +3,7 @@ export * from './finance';
 export * from './journal';
 export * from './copier';
 export * from './analytics';
+export * from './backtest';
 
 // Re-export common types that might be used across modules
 export type {

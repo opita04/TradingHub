@@ -63,19 +63,10 @@ export const useTemplateStore = create<TemplateStore>((set) => ({
     },
 
     loadTemplates: () => {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/9e8b917d-6254-43be-83b6-79fe8568963b', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'templateStore.ts:59', message: 'loadTemplates called', data: {}, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'D' }) }).catch(() => { });
-        // #endregion
         try {
             const templates = storageService.loadTemplates();
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/9e8b917d-6254-43be-83b6-79fe8568963b', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'templateStore.ts:62', message: 'Templates loaded from storage', data: { templatesCount: templates.length, usingDefaults: templates.length === 0 }, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'D' }) }).catch(() => { });
-            // #endregion
             set({ templates: templates.length > 0 ? templates : defaultTemplates });
         } catch (error) {
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/9e8b917d-6254-43be-83b6-79fe8568963b', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'templateStore.ts:65', message: 'ERROR loading templates', data: { errorMessage: error instanceof Error ? error.message : String(error) }, timestamp: Date.now(), sessionId: 'debug-session', runId: 'run1', hypothesisId: 'D' }) }).catch(() => { });
-            // #endregion
             throw error;
         }
     },
