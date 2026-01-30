@@ -25,9 +25,9 @@ export const SessionSummary: React.FC = () => {
         : 0;
 
     return (
-        <div className="max-w-4xl mx-auto py-16 px-6 animate-fade-in">
+        <div className="max-w-4xl mx-auto py-12 px-6 animate-fade-in">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
                 <div>
                     <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
@@ -49,7 +49,7 @@ export const SessionSummary: React.FC = () => {
             </div>
 
             {/* Core Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <SummaryCard
                     label="Samples"
                     value={sessionTrades.length}
@@ -80,7 +80,7 @@ export const SessionSummary: React.FC = () => {
                 />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
                 {/* Visual Breakdown */}
                 <div className="lg:col-span-2 bg-surface/30 border border-white/5 rounded-[2.5rem] p-10 backdrop-blur-xl">
                     <h3 className="text-xs font-black text-tertiary uppercase tracking-[0.4em] mb-8">Execution Matrix</h3>
@@ -128,7 +128,7 @@ export const SessionSummary: React.FC = () => {
 };
 
 const SummaryCard = ({ label, value, subValue, icon: Icon, color }: any) => (
-    <div className="bg-surface/20 border border-white/5 p-8 rounded-[2rem] backdrop-blur-sm relative overflow-hidden group">
+    <div className="bg-surface/20 border border-white/5 p-6 rounded-[2rem] backdrop-blur-sm relative overflow-hidden group">
         <div className="absolute top-0 right-0 p-4 transition-transform duration-500 group-hover:scale-110 opacity-20 group-hover:opacity-40">
             <Icon size={40} className={color} />
         </div>

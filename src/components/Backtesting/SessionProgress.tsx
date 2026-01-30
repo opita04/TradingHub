@@ -18,7 +18,7 @@ export const SessionProgress: React.FC = () => {
     };
 
     return (
-        <div className="w-full space-y-6">
+        <div className="w-full space-y-8">
             <div className="flex items-center justify-between px-2">
                 <div className="space-y-1">
                     <div className="flex items-baseline gap-2">

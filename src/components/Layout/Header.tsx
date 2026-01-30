@@ -19,6 +19,7 @@ export const Header: React.FC = () => {
             case 'finance': return 'Personal Finance';
             case 'diary': return 'Diary';
             case 'backtest': return isSessionActive ? 'Backtest Execution' : 'Backtesting';
+            case 'optimization-results': return 'Optimization Results';
             default: return activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
         }
     };

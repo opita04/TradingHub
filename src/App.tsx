@@ -21,7 +21,7 @@ import { Diary } from './components/Diary/Diary';
 import { AccountPage } from './components/Account/AccountPage';
 import { NewTradeModal } from './components/TradeEntry/NewTradeModal';
 import { Workstation } from './components/Workstation/Workstation';
-import { BacktestPage, SessionLockOverlay } from './components/Backtesting';
+import { BacktestPage, OptimizationResults, SessionLockOverlay } from './components/Backtesting';
 
 function App() {
   const { activeTab, isNewTradeModalOpen, setNewTradeModalOpen } = useAppStore();
@@ -62,6 +62,8 @@ function App() {
         return <SessionLockOverlay><Diary /></SessionLockOverlay>;
       case 'backtest':
         return <BacktestPage />;
+      case 'optimization-results':
+        return <OptimizationResults />;
       default:
         return (
           <div className="flex flex-col items-center justify-center h-[60vh] text-tertiary">
@@ -88,4 +90,3 @@ function App() {
 }
 
 export default App;
-

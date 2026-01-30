@@ -5,3 +5,4 @@ export * from './SessionProgress';
 export * from './BacktestTradeQuickLog';
 export * from './SessionSummary';
 export * from './SessionLockOverlay';
+export * from './OptimizationResults';

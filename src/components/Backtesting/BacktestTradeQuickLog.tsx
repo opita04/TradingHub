@@ -73,7 +73,7 @@ export const BacktestTradeQuickLog: React.FC = () => {
     const isComplete = setupPresent !== null && entryValid !== null && outcome !== null;
 
     return (
-        <div className="space-y-10">
+        <div className="space-y-8">
             {/* Action Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* 1. Setup Status */}
@@ -82,7 +82,7 @@ export const BacktestTradeQuickLog: React.FC = () => {
                         <label className="text-[10px] font-black text-tertiary uppercase tracking-[0.3em]">01. Setup</label>
                         <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded ${setupPresent !== null ? 'bg-brand/20 text-brand' : 'bg-white/5 text-tertiary'}`}>REQUIRED</span>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-4">
                         <ActionButton
                             active={setupPresent === true}
                             onClick={() => setSetupPresent(true)}
@@ -108,7 +108,7 @@ export const BacktestTradeQuickLog: React.FC = () => {
                         <label className="text-[10px] font-black text-tertiary uppercase tracking-[0.3em]">02. Validity</label>
                         <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded ${entryValid !== null ? 'bg-brand/20 text-brand' : 'bg-white/5 text-tertiary'}`}>REQUIRED</span>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-4">
                         <ActionButton
                             active={entryValid === true}
                             onClick={() => setEntryValid(true)}
@@ -274,7 +274,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({ active, onClick, label, sho
                     ? `${colorMap[color]} shadow-[0_0_20px_rgba(0,0,0,0.4)] scale-[0.98]`
                     : 'bg-white/5 border-white/5 text-tertiary hover:bg-white/10 hover:border-white/10'
                 }
-                ${compact ? 'py-4' : 'py-6'}
+                ${compact ? 'py-4' : 'py-5'}
             `}
         >
             {active && (

@@ -1,0 +1,38 @@
+# Dependencies
+node_modules
+
+# Build output (we rebuild in container)
+dist
+
+# Version control
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment files (security)
+.env
+.env.*
+!.env.example
+
+# Test files
+coverage
+*.test.*
+*.spec.*
+__tests__
+
+# Misc
+.DS_Store
+Thumbs.db
+*.md
+!README.md
+.agent
+ideal Images

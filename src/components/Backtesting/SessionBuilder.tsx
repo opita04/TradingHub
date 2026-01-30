@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useStrategiesStore } from '../../stores/strategiesStore';
 import { useBacktestStore } from '../../stores/backtestStore';
-import { Play, Timer, Target as TargetIcon, ChevronDown, Activity, Zap } from 'lucide-react';
+import { Timer, Target as TargetIcon, ChevronDown, Zap } from 'lucide-react';
 
 export const SessionBuilder: React.FC = () => {
     const { strategies } = useStrategiesStore();
@@ -33,7 +33,7 @@ export const SessionBuilder: React.FC = () => {
     return (
         <div className="max-w-2xl mx-auto pt-2 pb-16 px-6 animate-fade-in">
             <div className="text-center mb-8">
-                <h1 className="text-4xl font-black text-primary mb-3 tracking-tight">Backtest Session</h1>
+                <h1 className="text-4xl font-black text-primary mb-4 tracking-tight">Backtest Session</h1>
                 <p className="text-tertiary text-sm max-w-sm mx-auto leading-relaxed">
                     Set your constraints. Focus on execution excellence, <span className="text-secondary italic">zero over-analysis</span>.
                 </p>
@@ -43,9 +43,9 @@ export const SessionBuilder: React.FC = () => {
                 {/* Decorative background glow */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-brand/20 to-purple-500/20 rounded-[2.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition duration-1000" />
 
-                <div className="relative bg-[#0A0A0B]/80 border border-white/5 p-10 rounded-[2rem] backdrop-blur-xl shadow-2xl space-y-8">
+                <div className="relative bg-[#0A0A0B]/80 border border-white/5 p-8 rounded-[2rem] backdrop-blur-xl shadow-2xl space-y-8">
                     {/* Strategy Selection */}
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                         <label className="text-[10px] font-bold text-tertiary uppercase tracking-[0.2em] ml-1">Strategy Architecture</label>
                         <div className="relative group/select">
                             <select
@@ -64,7 +64,7 @@ export const SessionBuilder: React.FC = () => {
 
                     <div className="grid grid-cols-2 gap-6">
                         {/* Market */}
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                             <label className="text-[10px] font-bold text-tertiary uppercase tracking-[0.2em] ml-1">Symbol / Asset</label>
                             <input
                                 type="text"
@@ -76,7 +76,7 @@ export const SessionBuilder: React.FC = () => {
                         </div>
 
                         {/* Timeframe */}
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                             <label className="text-[10px] font-bold text-tertiary uppercase tracking-[0.2em] ml-1">Execution TF</label>
                             <div className="relative group/select">
                                 <select

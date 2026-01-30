@@ -31,9 +31,9 @@ export const ActiveSession: React.FC = () => {
 
             {/* Tactical Header */}
             <div className="w-full relative z-10 flex items-center justify-between mb-16 px-6">
-                <div className="flex items-center gap-10">
+                <div className="flex items-center gap-8">
                     <div className="flex flex-col">
-                        <div className="flex items-center gap-2 mb-1.5">
+                        <div className="flex items-center gap-2 mb-2">
                             <Cpu size={14} className="text-brand animate-pulse" />
                             <span className="text-[10px] font-black text-tertiary uppercase tracking-[0.3em]">Protocol Active</span>
                         </div>
@@ -45,7 +45,7 @@ export const ActiveSession: React.FC = () => {
                     <div className="h-10 w-px bg-white/10" />
 
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-tertiary uppercase tracking-[0.3em] mb-1.5">Environment</span>
+                        <span className="text-[10px] font-black text-tertiary uppercase tracking-[0.3em] mb-2">Environment</span>
                         <div className="text-sm font-bold text-secondary flex items-center gap-3">
                             <span className="text-brand">{currentSession.market}</span>
                             <span className="opacity-20">/</span>
@@ -54,9 +54,9 @@ export const ActiveSession: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-10">
+                <div className="flex items-center gap-8">
                     <div className="flex flex-col items-end">
-                        <span className="text-[10px] font-black text-tertiary uppercase tracking-[0.3em] mb-1.5">Status</span>
+                        <span className="text-[10px] font-black text-tertiary uppercase tracking-[0.3em] mb-2">Status</span>
                         <div className="flex items-center gap-2.5 px-4 py-1.5 bg-brand/10 border border-brand/20 rounded-full">
                             <Lock size={10} className="text-brand" />
                             <span className="text-[10px] font-black text-brand uppercase tracking-widest leading-none">Locked</span>
@@ -86,7 +86,7 @@ export const ActiveSession: React.FC = () => {
             {/* Main Execution Surface */}
             <div className="w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
                 {/* Left: Progress & Feedback */}
-                <div className="lg:col-span-5 space-y-12 bg-surface/20 border border-white/5 p-10 rounded-[2.5rem] backdrop-blur-xl shadow-2xl">
+                <div className="lg:col-span-5 space-y-8 bg-surface/20 border border-white/5 p-8 rounded-[2.5rem] backdrop-blur-xl shadow-2xl">
                     <SessionProgress />
 
                     <div className="p-8 bg-brand/5 border border-brand/10 rounded-2xl">
@@ -103,11 +103,11 @@ export const ActiveSession: React.FC = () => {
                 </div>
 
                 {/* Right: Quick Log Interface */}
-                <div className="lg:col-span-7 bg-[#0D0D0E]/80 border border-white/5 p-12 rounded-[2.5rem] backdrop-blur-xl shadow-2xl relative overflow-hidden group">
+                <div className="lg:col-span-7 bg-[#0D0D0E]/80 border border-white/5 p-8 rounded-[2.5rem] backdrop-blur-xl shadow-2xl relative overflow-hidden group">
                     {/* Decorative corner accent */}
                     <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-brand/10 to-transparent pointer-events-none" />
 
-                    <div className="mb-10 flex items-center justify-between">
+                    <div className="mb-8 flex items-center justify-between">
                         <h3 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Log Action</h3>
                         <div className="flex gap-2">
                             <div className="w-2 h-2 rounded-full bg-brand/40" />

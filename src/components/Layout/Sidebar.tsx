@@ -5,6 +5,7 @@ import {
     Building2,
     Wallet,
     LineChart,
+    BarChart3,
     Ghost,
     BookOpen,
     DollarSign,
@@ -358,6 +359,13 @@ export const Sidebar: React.FC = () => {
                     badge={isSessionActive ? 'ACTIVE' : undefined}
                     active={activeTab === 'backtest'}
                     onClick={() => setActiveTab('backtest')}
+                />
+                <SidebarItem
+                    icon={BarChart3}
+                    label="Optimization Results"
+                    id="optimization-results"
+                    active={activeTab === 'optimization-results'}
+                    onClick={() => setActiveTab('optimization-results')}
                 />
 
 

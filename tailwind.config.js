@@ -7,20 +7,52 @@ export default {
     theme: {
         extend: {
             colors: {
-                // Backgrounds
-                app: '#0B0D10', // Deepest Charcoal/Black
-                surface: '#15171B', // Slightly lighter cool-toned dark grey
+                // Semantic Palette
+                border: "hsl(var(--border))",
+                input: "hsl(var(--input))",
+                ring: "hsl(var(--ring))",
+                background: "hsl(var(--background))",
+                foreground: "hsl(var(--foreground))",
+
+                // Primary Brand
+                primary: {
+                    DEFAULT: "hsl(var(--primary))",
+                    foreground: "hsl(var(--primary-foreground))",
+                },
+                secondary: {
+                    DEFAULT: "hsl(var(--secondary))",
+                    foreground: "hsl(var(--secondary-foreground))",
+                },
+                destructive: {
+                    DEFAULT: "hsl(var(--destructive))",
+                    foreground: "hsl(var(--destructive-foreground))",
+                },
+                muted: {
+                    DEFAULT: "hsl(var(--muted))",
+                    foreground: "hsl(var(--muted-foreground))",
+                },
+                accent: {
+                    DEFAULT: "hsl(var(--accent))",
+                    foreground: "hsl(var(--accent-foreground))",
+                },
+                popover: {
+                    DEFAULT: "hsl(var(--popover))",
+                    foreground: "hsl(var(--popover-foreground))",
+                },
+                card: {
+                    DEFAULT: "hsl(var(--card))",
+                    foreground: "hsl(var(--card-foreground))",
+                },
+
+                // Legacy/Direct Mappings (for backward compatibility during refactor)
+                app: '#0B0D10', // Keeping for now, mapped to background in CSS
+                surface: '#15171B',
                 'surface-highlight': '#1E2128',
 
-                // Accents - Neon
-                profit: '#22C55E', // Neon Mint/Green
-                loss: '#EF4444',   // Vivid Red
-                brand: '#06B6D4',  // Electric Blue/Cyan
-
-                // Text
-                primary: '#FFFFFF',
-                secondary: '#94A3B8',
-                tertiary: '#64748B',
+                // Specific Status Colors
+                profit: '#22C55E',
+                loss: '#EF4444',
+                brand: '#06B6D4',
             },
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],
